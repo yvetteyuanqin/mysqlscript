@@ -1,73 +1,75 @@
-CREATE TABLE `moviedb`.`stars` (
-  `id` VARCHAR(10) NOT NULL,
-  `name` VARCHAR(100) NULL,
-  `birthYear` INT NULL,
-  PRIMARY KEY (`id`));
+CREATE TABLE `creditcards` (
+  `id` varchar(20) NOT NULL,
+  `firstName` varchar(50) DEFAULT NULL,
+  `lastName` varchar(50) DEFAULT NULL,
+  `expiration` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+); 
 
-CREATE TABLE `moviedb`.`stars_in_movie` (
-  `starId` VARCHAR(10) NULL,
-  `movieId` VARCHAR(10) NULL,
-  INDEX `FK_star_idx` (`starId` ASC) VISIBLE,
-  INDEX `FK_movie_idx` (`movieId` ASC) VISIBLE,
-  CONSTRAINT `FK_star`
-    FOREIGN KEY (`starId`)
-    REFERENCES `moviedb`.`stars` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `FK_movie`
-    FOREIGN KEY (`movieId`)
-    REFERENCES `moviedb`.`movies` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
-    
-    CREATE TABLE `moviedb`.`genres` (
-  `id` INT NOT NULL,
-  `name` VARCHAR(32) NULL DEFAULT '',
-  PRIMARY KEY (`id`));
-
-CREATE TABLE `moviedb`.`customers` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `firstName` VARCHAR(50) NULL,
-  `lastName` VARCHAR(50) NULL,
-  `ccId` VARCHAR(20) NULL,
-  `address` VARCHAR(200) NULL,
-  `email` VARCHAR(50) NULL,
-  `password` VARCHAR(20) NULL,
-  PRIMARY KEY (`id`));
-
-CREATE TABLE `moviedb`.`sales` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `customerId` INT NULL,
-  `movieId` VARCHAR(10) NULL,
-  `saleDate` DATE NULL,
+CREATE TABLE `customers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(50) DEFAULT NULL,
+  `lastName` varchar(50) DEFAULT NULL,
+  `ccId` varchar(20) DEFAULT NULL,
+  `address` varchar(200) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `password` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `FK_CUS_idx` (`customerId` ASC) VISIBLE,
-  INDEX `fk_mov_idx` (`movieId` ASC) VISIBLE,
-  CONSTRAINT `FK_CUS`
-    FOREIGN KEY (`customerId`)
-    REFERENCES `moviedb`.`customers` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_mov`
-    FOREIGN KEY (`movieId`)
-    REFERENCES `moviedb`.`movies` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  KEY `fk_ccid_idx` (`ccId`),
+  CONSTRAINT `fk_ccid` FOREIGN KEY (`ccId`) REFERENCES `creditcards` (`id`)
+);
 
-CREATE TABLE `moviedb`.`creditcards` (
-  `id` VARCHAR(20) NOT NULL,
-  `firstName` VARCHAR(50) NULL,
-  `lastName` VARCHAR(50) NULL,
-  `expiration` DATE NULL,
-  PRIMARY KEY (`id`));
+CREATE TABLE `genres` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) DEFAULT '',
+  PRIMARY KEY (`id`)
+);
 
-CREATE TABLE `moviedb`.`ratings` (
-  `movieId` VARCHAR(10) NOT NULL,
-  `rating` FLOAT NULL,
-  `numVotes` INT NULL,
+CREATE TABLE `genres_in_movies` (
+  `genreId` int(11) DEFAULT NULL,
+  `movieId` varchar(10) DEFAULT NULL
+);
+
+CREATE TABLE `movies` (
+  `id` varchar(10) NOT NULL DEFAULT '',
+  `title` varchar(100) DEFAULT '',
+  `year` int(11) DEFAULT NULL,
+  `director` varchar(100) DEFAULT '',
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `ratings` (
+  `movieId` varchar(10) NOT NULL,
+  `rating` float DEFAULT NULL,
+  `numVotes` int(11) DEFAULT NULL,
   PRIMARY KEY (`movieId`),
-  CONSTRAINT `movie_fk`
-    FOREIGN KEY (`movieId`)
-    REFERENCES `moviedb`.`movies` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  CONSTRAINT `movie_fk` FOREIGN KEY (`movieId`) REFERENCES `movies` (`id`)
+);
+
+CREATE TABLE `sales` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customerId` int(11) DEFAULT NULL,
+  `movieId` varchar(10) DEFAULT NULL,
+  `saleDate` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_CUS_idx` (`customerId`),
+  KEY `fk_mov_idx` (`movieId`),
+  CONSTRAINT `FK_CUS` FOREIGN KEY (`customerId`) REFERENCES `customers` (`id`),
+  CONSTRAINT `fk_mov` FOREIGN KEY (`movieId`) REFERENCES `movies` (`id`)
+); 
+
+CREATE TABLE `stars` (
+  `id` varchar(10) NOT NULL,
+  `name` varchar(100) DEFAULT '',
+  `birthYear` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+); 
+
+CREATE TABLE `stars_in_movies` (
+  `starId` varchar(10) DEFAULT NULL,
+  `movieId` varchar(10) DEFAULT NULL,
+  KEY `FK_star_idx` (`starId`),
+  KEY `FK_movie_idx` (`movieId`),
+  CONSTRAINT `FK_movie` FOREIGN KEY (`movieId`) REFERENCES `movies` (`id`),
+  CONSTRAINT `FK_star` FOREIGN KEY (`starId`) REFERENCES `stars` (`id`)
+) ;
